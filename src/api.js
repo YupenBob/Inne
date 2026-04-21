@@ -32,7 +32,7 @@ const API = {
           'Authorization': `Bearer ${apiKey}`
         },
         body: {
-          model: modelName || (modelType === 'minimax' ? 'MiniMax-Text-01' : 'gpt-4o-mini'),
+          model: modelName || (modelType === 'minimax' ? 'MiniMax-M2.7' : 'gpt-4o-mini'),
           messages: messages,
           stream: true
         }
@@ -73,7 +73,7 @@ const API = {
 
     const req = this.buildRequest(
       modelType,
-      modelType === 'minimax' ? 'MiniMax-Text-01' : (modelName || 'gpt-4o-mini'),
+      modelType === 'minimax' ? 'MiniMax-M2.7' : (modelName || 'gpt-4o-mini'),
       messages,
       apiKey,
       baseUrl || this.getDefaultBaseUrl(modelType)
@@ -159,7 +159,7 @@ const API = {
     const models = {
       openai: ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo', 'gpt-3.5-turbo'],
       anthropic: ['claude-3-5-sonnet-latest', 'claude-3-5-haiku-latest', 'claude-3-opus-latest'],
-      minimax: ['MiniMax-Text-01'],
+      minimax: ['MiniMax-M2.7'],
       custom: []
     };
     return models[modelType] || [];
