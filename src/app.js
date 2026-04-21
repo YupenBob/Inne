@@ -166,7 +166,7 @@
     sendBtn.disabled = false;
 
     // Markdown 渲染 AI 返回内容
-    const finalContent = assistantMsg.bubble.textContent;
+    const finalContent = assistantMsg.bubble.textContent.split('<think>').join('').split('</think>').join('').trim();
     assistantMsg.bubble.innerHTML = marked.parse(finalContent);
 
     // 保存对话
