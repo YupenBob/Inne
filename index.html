@@ -88,6 +88,20 @@
             <label>模型名称</label>
             <input type="text" id="modelNameInput" placeholder="gpt-4o-mini">
           </div>
+          <div class="setting-group">
+            <label>API 协议</label>
+            <select id="apiProtocolSelect">
+              <option value="https">HTTPS</option>
+              <option value="http">HTTP</option>
+            </select>
+          </div>
+          <div class="setting-group toggle-group">
+            <label>显示思考过程</label>
+            <label class="toggle-switch">
+              <input type="checkbox" id="showThinkingToggle">
+              <span class="toggle-slider"></span>
+            </label>
+          </div>
         </div>
         <div class="modal-footer">
           <button class="btn-secondary" id="clearChatBtn">清空对话</button>

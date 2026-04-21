@@ -127,6 +127,8 @@
     emptyState.style.display = 'none';
 
     const assistantMsg = addMessage('assistant', '', true);
+    let thinkingContent = '';
+    let thinkingEl = null;
 
     // 构建请求消息（含系统提示）
     const requestMessages = [
@@ -140,8 +142,22 @@
         assistantMsg.bubble.textContent += chunk;
         scrollToBottom();
       },
+      thinking => {
+        // 显示思考区域
+        const wrapper = assistantMsg.bubble.querySelector('.thinking-wrapper');
+        if (wrapper) {
+          wrapper.style.display = 'block';
+        }
+        if (!thinkingEl) {
+          thinkingEl = assistantMsg.bubble.querySelector('.thinking-block');
+        }
+        if (thinkingEl) {
+          thinkingEl.textContent += thinking;
+        }
+        thinkingContent += thinking;
+      },
       err => {
-        assistantMsg.bubble.textContent = `⚠️ ${err}`;
+        assistantMsg.bubble.innerHTML = `⚠️ ${err}`;
         assistantMsg.bubble.style.color = '#e74c3c';
       }
     );
@@ -149,8 +165,12 @@
     isStreaming = false;
     sendBtn.disabled = false;
 
+    // Markdown 渲染 AI 返回内容
+    const finalContent = assistantMsg.bubble.textContent;
+    assistantMsg.bubble.innerHTML = marked.parse(finalContent);
+
     // 保存对话
-    conversationHistory.push({ role: 'assistant', content: assistantMsg.bubble.textContent });
+    conversationHistory.push({ role: 'assistant', content: finalContent });
     saveSession();
   }
 
@@ -163,8 +183,25 @@
 
     msg.innerHTML = `
       <img class="msg-avatar" src="${role === 'assistant' ? avatarUrl : ''}" alt="">
-      <div class="msg-bubble">${isLoading ? '<div class="msg-loading"><span></span><span></span><span></span></div>' : ''}</div>
+      <div class="msg-bubble">${isLoading ? '<div class="msg-loading"><span></span><span></span><span></span></div>' : ''}${role === 'assistant' && !isLoading ? '<div class="thinking-wrapper" style="display:none;"><div class="thinking-toggle">🤔 思考中... <span class="thinking-arrow">▶</span></div><div class="thinking-block"></div></div>' : ''}</div>
     `;
+
+    // 添加思考区域点击展开功能
+    const thinkingWrapper = msg.querySelector('.thinking-wrapper');
+    const thinkingToggle = msg.querySelector('.thinking-toggle');
+    if (thinkingToggle) {
+      thinkingToggle.addEventListener('click', () => {
+        const block = thinkingWrapper.querySelector('.thinking-block');
+        const arrow = thinkingToggle.querySelector('.thinking-arrow');
+        if (block.style.display === 'none') {
+          block.style.display = 'block';
+          arrow.textContent = '▼';
+        } else {
+          block.style.display = 'none';
+          arrow.textContent = '▶';
+        }
+      });
+    }
 
     messages.appendChild(msg);
     scrollToBottom();
@@ -187,6 +224,8 @@
     apiKeyInput.value = config.apiKey;
     baseUrlInput.value = config.baseUrl;
     modelNameInput.value = config.modelName;
+    apiProtocolSelect.value = API.getProtocol();
+    showThinkingToggle.checked = API.isShowThinking();
     updateBaseUrlGroup();
     updateModelNamePlaceholder();
   }
@@ -196,7 +235,9 @@
       modelType: modelType.value,
       apiKey: apiKeyInput.value.trim(),
       baseUrl: baseUrlInput.value.trim(),
-      modelName: modelNameInput.value.trim()
+      modelName: modelNameInput.value.trim(),
+      apiProtocol: apiProtocolSelect.value,
+      showThinking: showThinkingToggle.checked
     });
     updateBaseUrlGroup();
     updateModelNamePlaceholder();
@@ -329,6 +370,17 @@
 
     // 添加角色弹窗
     addCharacterBtn.addEventListener('click', () => openModal(addCharacterModal));
+    closeAddCharBtn.addEventListener('click', () => closeModal(addCharacterModal));
+    cancelAddCharBtn.addEventListener('click', () => closeModal(addCharacterModal));
+    confirmAddCharBtn.addEventListener('click', addCustomCharacter);
+    addCharacterModal.addEventListener('click', e => {
+      if (e.target === addCharacterModal) closeModal(addCharacterModal);
+    });
+  }
+
+  // === 启动 ===
+  init();
+})();
     closeAddCharBtn.addEventListener('click', () => closeModal(addCharacterModal));
     cancelAddCharBtn.addEventListener('click', () => closeModal(addCharacterModal));
     confirmAddCharBtn.addEventListener('click', addCustomCharacter);

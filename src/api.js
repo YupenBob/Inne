@@ -21,8 +21,25 @@ const API = {
     localStorage.setItem('inne_model_name', config.modelName);
   },
 
+  // 获取配置
+  getProtocol() {
+    return localStorage.getItem('inne_api_protocol') || 'https';
+  },
+
+  // 显示思考
+  isShowThinking() {
+    return localStorage.getItem('inne_show_thinking') === '1';
+  },
+
   // 构建请求
   buildRequest(modelType, modelName, messages, apiKey, baseUrl) {
+    const protocol = this.getProtocol();
+    // 确保 baseUrl 有正确的协议前缀
+    if (baseUrl && !baseUrl.startsWith('http')) {
+      baseUrl = `${protocol}://${baseUrl}`;
+    } else if (baseUrl && baseUrl.startsWith('//')) {
+      baseUrl = `${protocol}:${baseUrl}`;
+    }
     if (modelType === 'openai' || modelType === 'minimax' || modelType === 'custom') {
       return {
         url: `${baseUrl}/chat/completions`,
@@ -62,7 +79,7 @@ const API = {
   },
 
   // 流式调用
-  async streamChat(messages, onChunk, onError) {
+  async streamChat(messages, onChunk, onThinking, onError) {
     const config = this.getConfig();
     const { modelType, apiKey, baseUrl, modelName } = config;
 
@@ -113,6 +130,11 @@ const API = {
 
           try {
             const data = JSON.parse(dataStr);
+            // 处理 thinking 内容
+            if (modelType === 'anthropic' && data.type === 'content_block_delta' && data.delta && data.delta.type === 'thinking') {
+              if (onThinking) onThinking(data.delta.thinking);
+              continue;
+            }
             const content = this.extractContent(modelType, data);
             if (content) {
               onChunk(content);
@@ -131,6 +153,10 @@ const API = {
   extractContent(modelType, data) {
     if (modelType === 'anthropic') {
       // Anthropic 流式: data.type = 'content_block_delta', data.delta.text
+      // 过滤掉 thinking 内容（已在上层 streamChat 处理）
+      if (data.type === 'content_block_delta' && data.delta && data.delta.type === 'thinking') {
+        return null;
+      }
       if (data.type === 'content_block_delta' && data.delta && data.delta.text) {
         return data.delta.text;
       }

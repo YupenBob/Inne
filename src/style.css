@@ -653,6 +653,102 @@ button {
   background: var(--bg-secondary);
 }
 
+/* Toggle Switch */
+.toggle-group {
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.toggle-switch {
+  position: relative;
+  display: inline-block;
+  width: 44px;
+  height: 24px;
+  cursor: pointer;
+}
+
+.toggle-switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.toggle-slider {
+  position: absolute;
+  inset: 0;
+  background: var(--bg-input);
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  transition: all 0.3s ease;
+}
+
+.toggle-slider::before {
+  content: '';
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  left: 2px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--text-muted);
+  border-radius: 50%;
+  transition: all 0.3s ease;
+}
+
+.toggle-switch input:checked + .toggle-slider {
+  background: var(--accent-gold-dim);
+  border-color: var(--accent-gold);
+}
+
+.toggle-switch input:checked + .toggle-slider::before {
+  transform: translateY(-50%) translateX(20px);
+  background: var(--accent-gold);
+}
+
+/* Thinking Block */
+.thinking-wrapper {
+  margin-bottom: 10px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  overflow: hidden;
+}
+
+.thinking-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 10px;
+  background: var(--bg-input);
+  color: var(--text-secondary);
+  font-size: 12px;
+  cursor: pointer;
+  user-select: none;
+  transition: background 0.2s;
+}
+
+.thinking-toggle:hover {
+  background: var(--bg-card);
+  color: var(--text-primary);
+}
+
+.thinking-arrow {
+  font-size: 10px;
+  transition: transform 0.2s;
+}
+
+.thinking-block {
+  display: none;
+  padding: 10px;
+  background: var(--bg-input);
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.6;
+  border-top: 1px solid var(--border);
+  white-space: pre-wrap;
+  font-family: var(--font-body);
+}
+
 /* === 移动端适配 === */
 @media (max-width: 768px) {
   .sidebar {
@@ -672,7 +768,11 @@ button {
   }
 
   .mobile-menu-btn {
-    display: flex;
+    display: flex !important;
+  }
+
+  .topbar-right {
+    opacity: 1 !important;
   }
 
   .topbar {
@@ -757,6 +857,10 @@ button {
 
 /* === 移动端设置弹窗优化 === */
 @media (max-width: 480px) {
+  .topbar-right {
+    opacity: 1 !important;
+  }
+
   .modal-overlay {
     align-items: flex-end;
     justify-content: stretch;
