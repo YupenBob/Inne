@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Inne — 酒馆</title>
+  <link rel="stylesheet" href="src/style.css">
+  <link rel="icon" href="assets/logo.svg" type="image/svg+xml">
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Noto+Serif+SC:wght@400;600&family=Noto+Sans+SC:wght@300;400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div id="app">
+    <!-- 顶栏 -->
+    <header class="topbar">
+      <div class="topbar-left">
+        <img src="assets/logo.svg" alt="Inne" class="logo-icon">
+        <span class="app-name">Inne 酒馆</span>
+      </div>
+      <div class="topbar-right">
+        <button class="btn-icon" id="settingsBtn" title="设置">⚙️</button>
+      </div>
+    </header>
+
+    <div class="main-layout">
+      <!-- 侧边栏：角色选择 -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <h2>角色列表</h2>
+          <button class="btn-icon" id="addCharacterBtn" title="添加自定义角色">➕</button>
+        </div>
+        <div class="character-list" id="characterList"></div>
+      </aside>
+
+      <!-- 对话区 -->
+      <main class="chat-area">
+        <!-- 角色信息卡 -->
+        <div class="character-card" id="characterCard">
+          <img class="char-avatar" id="charAvatar" src="" alt="">
+          <div class="char-info">
+            <h3 id="charName"></h3>
+            <p id="charDesc"></p>
+          </div>
+        </div>
+
+        <!-- 消息列表 -->
+        <div class="messages" id="messages"></div>
+
+        <!-- 空状态 -->
+        <div class="empty-state" id="emptyState">
+          <p>选择一个角色，开始你的酒馆之旅 🍺</p>
+        </div>
+
+        <!-- 输入区 -->
+        <div class="input-area">
+          <textarea class="input-box" id="inputBox" placeholder="输入消息... (Shift+Enter 换行，Enter 发送)" rows="1"></textarea>
+          <button class="btn-send" id="sendBtn">发送</button>
+        </div>
+      </main>
+    </div>
+
+    <!-- 设置弹窗 -->
+    <div class="modal-overlay" id="settingsModal">
+      <div class="modal">
+        <div class="modal-header">
+          <h3>⚙️ 设置</h3>
+          <button class="btn-icon" id="closeSettingsBtn">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="setting-group">
+            <label>模型类型</label>
+            <select id="modelType">
+              <option value="openai">OpenAI</option>
+              <option value="anthropic">Anthropic</option>
+              <option value="minimax">MiniMax</option>
+              <option value="custom">自定义</option>
+            </select>
+          </div>
+          <div class="setting-group" id="baseUrlGroup">
+            <label>Base URL</label>
+            <input type="text" id="baseUrlInput" placeholder="https://api.openai.com/v1">
+          </div>
+          <div class="setting-group">
+            <label>API Key</label>
+            <input type="password" id="apiKeyInput" placeholder="sk-...">
+          </div>
+          <div class="setting-group" id="modelNameGroup">
+            <label>模型名称</label>
+            <input type="text" id="modelNameInput" placeholder="gpt-4o-mini">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-secondary" id="clearChatBtn">清空对话</button>
+          <button class="btn-primary" id="saveSettingsBtn">保存</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 添加角色弹窗 -->
+    <div class="modal-overlay" id="addCharacterModal">
+      <div class="modal">
+        <div class="modal-header">
+          <h3>➕ 添加自定义角色</h3>
+          <button class="btn-icon" id="closeAddCharBtn">✕</button>
+        </div>
+        <div class="modal-body">
+          <div class="setting-group">
+            <label>角色名称</label>
+            <input type="text" id="newCharName" placeholder="例如：老猎人">
+          </div>
+          <div class="setting-group">
+            <label>角色描述</label>
+            <input type="text" id="newCharDesc" placeholder="简短描述这个角色">
+          </div>
+          <div class="setting-group">
+            <label>角色头像（URL，可选）</label>
+            <input type="text" id="newCharAvatar" placeholder="https://...">
+          </div>
+          <div class="setting-group">
+            <label>系统提示词</label>
+            <textarea id="newCharSystem" rows="4" placeholder="定义角色的性格、说话风格、背景故事..."></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn-secondary" id="cancelAddCharBtn">取消</button>
+          <button class="btn-primary" id="confirmAddCharBtn">添加</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="src/characters.js"></script>
+  <script src="src/api.js"></script>
+  <script src="src/app.js"></script>
+</body>
+</html>
