@@ -381,14 +381,3 @@
   // === 启动 ===
   init();
 })();
-    closeAddCharBtn.addEventListener('click', () => closeModal(addCharacterModal));
-    cancelAddCharBtn.addEventListener('click', () => closeModal(addCharacterModal));
-    confirmAddCharBtn.addEventListener('click', addCustomCharacter);
-    addCharacterModal.addEventListener('click', e => {
-      if (e.target === addCharacterModal) closeModal(addCharacterModal);
-    });
-  }
-
-  // === 启动 ===
-  init();
-})();
