@@ -313,6 +313,7 @@
 
     // 设置弹窗
     settingsBtn.addEventListener('click', () => openModal(settingsModal));
+    mobileMenuBtn.addEventListener('click', () => sidebar.classList.toggle('open'));
     closeSettingsBtn.addEventListener('click', () => closeModal(settingsModal));
     settingsModal.addEventListener('click', e => {
       if (e.target === settingsModal) closeModal(settingsModal);
