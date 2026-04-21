@@ -161,9 +161,12 @@ const API = {
         return data.delta.text;
       }
     } else {
-      // OpenAI / MiniMax: data.choices[0].delta.content
+      // OpenAI / MiniMax / Custom: data.choices[0].delta.content
       if (data.choices && data.choices[0] && data.choices[0].delta && data.choices[0].delta.content) {
-        return data.choices[0].delta.content;
+        let content = data.choices[0].delta.content;
+        // 过滤掉模型输出的 <think> / </think> 标签（如 DeepSeek、MiniMax 等）
+        content = content.replace(/<\/?think>/gi, '');
+        return content;
       }
     }
     return null;
