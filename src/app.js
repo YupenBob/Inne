@@ -183,8 +183,12 @@
 
     msg.innerHTML = `
       <img class="msg-avatar" src="${role === 'assistant' ? avatarUrl : ''}" alt="">
-      <div class="msg-bubble">${isLoading ? '<div class="msg-loading"><span></span><span></span><span></span></div>' : ''}${role === 'assistant' && !isLoading ? '<div class="thinking-wrapper" style="display:none;"><div class="thinking-toggle">🤔 思考中... <span class="thinking-arrow">▶</span></div><div class="thinking-block"></div></div>' : ''}</div>
+      <div class="msg-bubble">${isLoading ? '<div class="msg-loading"><span></span><span></span><span></span></div>' : ''}${role === 'assistant' && !isLoading ? '<div class="thinking-wrapper" style="display:none;"><div class="thinking-toggle">🤔 思考中... <span class="thinking-arrow">▶</span></div><div class="thinking-block"></div></div>' : ''}${role !== 'assistant' ? content : ''}</div>
     `;
+    
+    if (role !== 'assistant' && content) {
+      msg.querySelector('.msg-bubble').innerHTML = content;
+    }
 
     // 添加思考区域点击展开功能
     const thinkingWrapper = msg.querySelector('.thinking-wrapper');
